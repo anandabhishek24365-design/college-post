@@ -106,18 +106,34 @@ body {
 
 /* Printing styling for Reports & package receipts */
 @media print {
-  body, div, span, h1, h2, h3, h4, h5, h6, p, td, th, strong, time, code, a {
-    color: #000000 !important;
-    text-shadow: none !important;
+  /* Global resets to strip shadow styling and text glows */
+  *, *::before, *::after {
     box-shadow: none !important;
+    text-shadow: none !important;
   }
-  
-  body {
+
+  /* Force the page background to white and text to black */
+  html, body, #root, .min-h-screen, [class*="bg-campus-bg"] {
     background-color: #ffffff !important;
     background: #ffffff !important;
+    color: #000000 !important;
+  }
+
+  body {
     font-size: 11pt;
     -webkit-print-color-adjust: exact;
     print-color-adjust: exact;
+  }
+
+  /* Overwrite dark container backgrounds to transparent */
+  div, section, main, header, footer, nav, [class*="bg-campus-card"], [class*="bg-slate-"] {
+    background-color: transparent !important;
+    background: transparent !important;
+  }
+
+  /* Ensure all text elements are readable in black */
+  span, h1, h2, h3, h4, h5, h6, p, td, th, strong, time, code, a {
+    color: #000000 !important;
   }
   
   .no-print {
@@ -134,6 +150,7 @@ body {
   .campus-panel {
     border: 1px solid #444444 !important;
     background-color: #ffffff !important;
+    background: #ffffff !important;
     box-shadow: none !important;
     border-radius: 4px !important;
   }
@@ -170,10 +187,12 @@ body {
   th {
     font-weight: bold !important;
     background-color: #f3f4f6 !important;
+    background: #f3f4f6 !important;
   }
   
   tr:nth-child(even) {
     background-color: #f9fafb !important;
+    background: #f9fafb !important;
   }
   
   /* Status styles in print */
