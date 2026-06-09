@@ -132,7 +132,7 @@ export default function App() {
             {/* Header info */}
             <div className="text-center space-y-1 mb-2 no-print">
               <h1 className="text-2xl font-extrabold tracking-tight uppercase text-campus-text-main">
-                University Courier Desk
+                NIIT UNIVERSITY COURIER DESK
               </h1>
               <p className="text-xs text-campus-text-muted">
                 Student parcel, mail, and delivery status database.
