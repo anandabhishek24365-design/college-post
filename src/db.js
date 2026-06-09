@@ -95,7 +95,12 @@ const DEFAULT_STUDENTS = [
   { enrollmentNumber: 'BT/CSE/2023/045', name: 'Aarav Sharma', status: 'active' },
   { enrollmentNumber: 'BT/ECE/2022/102', name: 'Aditi Verma', status: 'active' },
   { enrollmentNumber: 'BT/ME/2024/012', name: 'Rohan Gupta', status: 'active' },
-  { enrollmentNumber: 'BT/CSE/2023/089', name: 'Priya Patel', status: 'active' }
+  { enrollmentNumber: 'BT/CSE/2023/089', name: 'Priya Patel', status: 'active' },
+  { enrollmentNumber: 'BT25GAD308', name: 'ANKITA PATEL', status: 'active' },
+  { enrollmentNumber: 'BT25GCS513', name: 'HARSH KATHIRIYA', status: 'active' },
+  { enrollmentNumber: 'BT25GCS531', name: 'SANSKAR PATHAK', status: 'active' },
+  { enrollmentNumber: 'BT25GCS515', name: 'TANISHKA SAGAR', status: 'active' },
+  { enrollmentNumber: 'BT25GCS322', name: 'TANVI GUPTA', status: 'active' }
 ];
 
 const DEFAULT_STAFF = [
@@ -197,14 +202,33 @@ getStoredData(MOCK_STAFF_KEY, DEFAULT_STAFF);
 getStoredData(MOCK_PACKAGES_KEY, DEFAULT_PACKAGES);
 getStoredData(MOCK_LOGS_KEY, DEFAULT_LOGS);
 
-// Seed students with dynamic avatars
+// Seed students with dynamic avatars and merge new defaults
 const studentsInStorage = localStorage.getItem(MOCK_STUDENTS_KEY);
-if (!studentsInStorage) {
-  const seeded = DEFAULT_STUDENTS.map(s => ({
-    ...s,
-    photo: generateInitialsAvatar(s.name)
-  }));
-  localStorage.setItem(MOCK_STUDENTS_KEY, JSON.stringify(seeded));
+let currentStudents = [];
+if (studentsInStorage) {
+  try {
+    currentStudents = JSON.parse(studentsInStorage);
+  } catch (e) {
+    currentStudents = [];
+  }
+}
+
+let updatedStorageNeeded = !studentsInStorage;
+const seededStudents = [...currentStudents];
+
+DEFAULT_STUDENTS.forEach(defStudent => {
+  const exists = seededStudents.some(s => s.enrollmentNumber.toUpperCase() === defStudent.enrollmentNumber.toUpperCase());
+  if (!exists) {
+    seededStudents.push({
+      ...defStudent,
+      photo: defStudent.photo || generateInitialsAvatar(defStudent.name)
+    });
+    updatedStorageNeeded = true;
+  }
+});
+
+if (updatedStorageNeeded) {
+  localStorage.setItem(MOCK_STUDENTS_KEY, JSON.stringify(seededStudents));
 }
 
 // Cloud Firestore Automated Database Seeder
