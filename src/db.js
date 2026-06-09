@@ -216,6 +216,14 @@ if (studentsInStorage) {
 let updatedStorageNeeded = !studentsInStorage;
 const seededStudents = [...currentStudents];
 
+// Update existing students in local storage who have empty/missing photos
+seededStudents.forEach(s => {
+  if (!s.photo) {
+    s.photo = generateInitialsAvatar(s.name);
+    updatedStorageNeeded = true;
+  }
+});
+
 DEFAULT_STUDENTS.forEach(defStudent => {
   const exists = seededStudents.some(s => s.enrollmentNumber.toUpperCase() === defStudent.enrollmentNumber.toUpperCase());
   if (!exists) {
@@ -235,47 +243,69 @@ if (updatedStorageNeeded) {
 const checkAndSeedDatabase = async () => {
   if (!isFirebaseActive) return;
   try {
-    const studentsSnap = await getDocs(collection(firestore, 'students'));
-    if (studentsSnap.empty) {
-      console.log("Cloud Firestore database is empty. Commencing automatic seeding...");
+    console.log("Checking and updating Cloud Firestore database collections...");
+    
+    // 1. Seed/Update Students
+    for (const s of DEFAULT_STUDENTS) {
+      const cleanEnroll = s.enrollmentNumber.trim().toUpperCase();
+      const docId = cleanEnroll.replace(/\//g, '_');
+      const docRef = doc(firestore, 'students', docId);
+      const docSnap = await getDoc(docRef);
       
-      // 1. Seed Students
-      for (const s of DEFAULT_STUDENTS) {
-        const cleanEnroll = s.enrollmentNumber.trim().toUpperCase();
-        const docId = cleanEnroll.replace(/\//g, '_');
-        await setDoc(doc(firestore, 'students', docId), {
+      if (!docSnap.exists()) {
+        await setDoc(docRef, {
           enrollmentNumber: cleanEnroll,
           name: s.name,
           photo: generateInitialsAvatar(s.name),
           status: s.status || 'active'
         });
+      } else {
+        // Update photo if it's currently empty or missing
+        const data = docSnap.data();
+        if (!data.photo) {
+          await updateDoc(docRef, {
+            photo: generateInitialsAvatar(s.name)
+          });
+        }
       }
+    }
+    
+    // 2. Seed/Update Staff Accounts
+    for (const st of DEFAULT_STAFF) {
+      const docId = st.email.replace(/\./g, '_');
+      const docRef = doc(firestore, 'staff', docId);
+      const docSnap = await getDoc(docRef);
       
-      // 2. Seed Staff Accounts (Firestore Collection)
-      for (const st of DEFAULT_STAFF) {
-        const docId = st.email.replace(/\./g, '_');
-        await setDoc(doc(firestore, 'staff', docId), {
+      if (!docSnap.exists()) {
+        await setDoc(docRef, {
           email: st.email,
           name: st.name,
           role: st.role,
           active: st.active
         });
       }
-      
-      // 3. Seed Courier Packages
+    }
+    
+    // 3. Seed Courier Packages if empty
+    const packagesSnap = await getDocs(collection(firestore, 'packages'));
+    if (packagesSnap.empty) {
       for (const pkg of DEFAULT_PACKAGES) {
         const { id, ...pkgData } = pkg;
         await addDoc(collection(firestore, 'packages'), pkgData);
       }
-      
-      // 4. Seed Audit Logs
+    }
+    
+    // 4. Seed Audit Logs if empty
+    const logsSnap = await getDocs(collection(firestore, 'activity_logs'));
+    if (logsSnap.empty) {
       for (const log of DEFAULT_LOGS) {
         const { id, ...logData } = log;
         await addDoc(collection(firestore, 'activity_logs'), logData);
       }
-      
-      console.log("Cloud Firestore database seeded successfully!");
     }
+    
+    console.log("Cloud Firestore database seeding/update check completed!");
+  }
 
     // Initialize/Seed Firebase Auth logins
     const authInstance = getAuth(app);
