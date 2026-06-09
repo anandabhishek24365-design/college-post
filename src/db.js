@@ -92,15 +92,15 @@ export const generateInitialsAvatar = (name) => {
 };
 
 const DEFAULT_STUDENTS = [
-  { enrollmentNumber: 'BT/CSE/2023/045', name: 'Aarav Sharma', status: 'active' },
-  { enrollmentNumber: 'BT/ECE/2022/102', name: 'Aditi Verma', status: 'active' },
-  { enrollmentNumber: 'BT/ME/2024/012', name: 'Rohan Gupta', status: 'active' },
-  { enrollmentNumber: 'BT/CSE/2023/089', name: 'Priya Patel', status: 'active' },
-  { enrollmentNumber: 'BT25GAD308', name: 'ANKITA PATEL', status: 'active' },
-  { enrollmentNumber: 'BT25GCS513', name: 'HARSH KATHIRIYA', status: 'active' },
-  { enrollmentNumber: 'BT25GCS531', name: 'SANSKAR PATHAK', status: 'active' },
-  { enrollmentNumber: 'BT25GCS515', name: 'TANISHKA SAGAR', status: 'active' },
-  { enrollmentNumber: 'BT25GCS322', name: 'TANVI GUPTA', status: 'active' }
+  { enrollmentNumber: 'BT/CSE/2023/045', name: 'Aarav Sharma', status: 'active', photo: '/students/BT_CSE_2023_045.png' },
+  { enrollmentNumber: 'BT/ECE/2022/102', name: 'Aditi Verma', status: 'active', photo: '/students/BT_ECE_2022_102.png' },
+  { enrollmentNumber: 'BT/ME/2024/012', name: 'Rohan Gupta', status: 'active', photo: '/students/BT_ME_2024_012.png' },
+  { enrollmentNumber: 'BT/CSE/2023/089', name: 'Priya Patel', status: 'active', photo: '/students/BT_CSE_2023_089.png' },
+  { enrollmentNumber: 'BT25GAD308', name: 'ANKITA PATEL', status: 'active', photo: '/students/BT25GAD308.jpg' },
+  { enrollmentNumber: 'BT25GCS513', name: 'HARSH KATHIRIYA', status: 'active', photo: '/students/BT25GCS513.jpg' },
+  { enrollmentNumber: 'BT25GCS531', name: 'SANSKAR PATHAK', status: 'active', photo: '/students/BT25GCS531.jpg' },
+  { enrollmentNumber: 'BT25GCS515', name: 'TANISHKA SAGAR', status: 'active', photo: '/students/BT25GCS515.jpg' },
+  { enrollmentNumber: 'BT25GCS322', name: 'TANVI GUPTA', status: 'active', photo: '/students/BT25GCS322.jpg' }
 ];
 
 const DEFAULT_STAFF = [
@@ -216,10 +216,22 @@ if (studentsInStorage) {
 let updatedStorageNeeded = !studentsInStorage;
 const seededStudents = [...currentStudents];
 
-// Update existing students in local storage who have empty/missing photos
-seededStudents.forEach(s => {
-  if (!s.photo) {
-    s.photo = generateInitialsAvatar(s.name);
+// Update/merge existing student records with default details (like photos) if missing or fallback
+seededStudents.forEach((student, idx) => {
+  const def = DEFAULT_STUDENTS.find(d => d.enrollmentNumber.toUpperCase() === student.enrollmentNumber.toUpperCase());
+  if (def) {
+    // If local storage has no photo, or has an empty string photo, or if the photo is a fallback avatar (starts with data:image),
+    // and the default student in code has a specific static image photo, overwrite it with the static image!
+    if ((!student.photo || student.photo.startsWith('data:image/png;base64,')) && def.photo) {
+      seededStudents[idx] = {
+        ...student,
+        photo: def.photo
+      };
+      updatedStorageNeeded = true;
+    }
+  } else if (!student.photo) {
+    // Fallback initials avatar if not a default student and has no photo
+    seededStudents[idx].photo = generateInitialsAvatar(student.name);
     updatedStorageNeeded = true;
   }
 });
