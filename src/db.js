@@ -305,7 +305,6 @@ const checkAndSeedDatabase = async () => {
     }
     
     console.log("Cloud Firestore database seeding/update check completed!");
-  }
 
     // Initialize/Seed Firebase Auth logins
     const authInstance = getAuth(app);
