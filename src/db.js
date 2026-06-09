@@ -268,7 +268,7 @@ const checkAndSeedDatabase = async () => {
         await setDoc(docRef, {
           enrollmentNumber: cleanEnroll,
           name: s.name,
-          photo: generateInitialsAvatar(s.name),
+          photo: s.photo || generateInitialsAvatar(s.name),
           status: s.status || 'active'
         });
       } else {
@@ -276,7 +276,7 @@ const checkAndSeedDatabase = async () => {
         const data = docSnap.data();
         if (!data.photo) {
           await updateDoc(docRef, {
-            photo: generateInitialsAvatar(s.name)
+            photo: s.photo || generateInitialsAvatar(s.name)
           });
         }
       }
