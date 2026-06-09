@@ -131,9 +131,10 @@ body {
     background: transparent !important;
   }
 
-  /* Ensure all text elements are readable in black */
-  span, h1, h2, h3, h4, h5, h6, p, td, th, strong, time, code, a {
+  /* Ensure all text elements are bold and black in colour */
+  *, html, body, div, span, h1, h2, h3, h4, h5, h6, p, td, th, tr, table, strong, time, code, a {
     color: #000000 !important;
+    font-weight: 700 !important;
   }
   
   .no-print {
@@ -158,16 +159,21 @@ body {
   .print-header {
     display: block !important;
     text-align: center !important;
-    border-bottom: 2px solid #000000 !important;
-    padding-bottom: 12px !important;
+    border-bottom: 3px double #000000 !important;
+    padding-bottom: 16px !important;
     margin-bottom: 24px !important;
+  }
+
+  .print-header h1 {
+    font-size: 32pt !important;
+    font-weight: 900 !important;
+    letter-spacing: 0.15em !important;
+    line-height: 1.1 !important;
+    margin-bottom: 6px !important;
   }
   
   .print-logo {
-    display: block !important;
-    margin: 0 auto 12px auto !important;
-    height: 48px !important;
-    width: auto !important;
+    display: none !important;
   }
   
   /* Table styling */
@@ -197,23 +203,26 @@ body {
   
   /* Status styles in print */
   .bg-campus-success\/15, .bg-campus-success\/10 {
-    background-color: #d1fae5 !important;
-    border: 1px solid #059669 !important;
-    color: #047857 !important;
+    background-color: #e5e7eb !important;
+    border: 1px solid #000000 !important;
+    color: #000000 !important;
+    font-weight: 700 !important;
     padding: 2px 6px !important;
     border-radius: 2px !important;
   }
   
   .bg-campus-accent\/15, .bg-campus-accent\/10 {
-    background-color: #fef3c7 !important;
-    border: 1px solid #d97706 !important;
-    color: #b45309 !important;
+    background-color: #e5e7eb !important;
+    border: 1px solid #000000 !important;
+    color: #000000 !important;
+    font-weight: 700 !important;
     padding: 2px 6px !important;
     border-radius: 2px !important;
   }
 
   /* Shelf location styles in print */
   .text-campus-accent {
-    color: #b45309 !important;
+    color: #000000 !important;
+    font-weight: 700 !important;
   }
 }

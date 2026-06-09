@@ -477,9 +477,8 @@ export default function AdminPanel({ packages, staffList, activityLogs, currentU
           </div>
 
           <div className="hidden print:block print-header text-center">
-            <img src="/logo.png" alt="NIIT University Logo" className="print-logo mx-auto h-12 w-auto mb-3" />
-            <h1 className="text-2xl font-bold uppercase tracking-wider text-black">NIIT University</h1>
-            <p className="text-xs font-mono text-gray-500 mt-1 uppercase tracking-widest font-semibold">The University of the Future</p>
+            <h1 className="text-4xl font-black uppercase tracking-widest text-black">NIIT UNIVERSITY</h1>
+            <p className="text-xs font-mono text-gray-500 mt-2 uppercase tracking-widest font-semibold">The University of the Future</p>
             <div className="mt-4 pt-3 border-t border-gray-300 flex justify-between text-xs font-mono text-gray-700">
               <span>REPORT: COURIER ROOM INVENTORY</span>
               <span>GENERATED: {new Date().toLocaleString()}</span>
